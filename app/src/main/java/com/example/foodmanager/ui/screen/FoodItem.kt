@@ -85,10 +85,8 @@ fun FoodItem(
 
                 Button(
                     onClick = {
-                        if (id == 0) {
-                            coroutineScope.launch {
-                                vm.addFood()
-                            }
+                        coroutineScope.launch {
+                            vm.addFood()
                         }
                     }, modifier = Modifier
                         .padding(15.dp)

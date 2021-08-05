@@ -54,11 +54,13 @@ class FoodViewModel @Inject constructor(private val repository: FoodRepositoryIm
     }
 
     fun addFood() {
-        val food = Food(name = name.toString(), price = price.toString().toDouble(), checked = false)
+        val food = Food(name = name.value, price = price.value.toDouble(), checked = false)
         viewModelScope.launch {
             repository.create(food)
         }
     }
+
+    // TODO: Update food
 
     fun deleteFood(food: Food) {
         viewModelScope.launch {
