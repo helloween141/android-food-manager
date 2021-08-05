@@ -7,7 +7,7 @@ import com.example.foodmanager.data.entity.Food
 
 @Database(
     entities = [Food::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class FoodDatabase : RoomDatabase() {

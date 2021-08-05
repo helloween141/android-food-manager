@@ -12,7 +12,7 @@ class FoodRepositoryImpl @Inject constructor(private val foodDao: FoodDao) {
         return foodDao.getAll()
     }
 
-    fun getById(id: Long): Flow<Food> {
+    fun getById(id: Int): Flow<Food> {
         return foodDao.getOneById(id)
     }
 

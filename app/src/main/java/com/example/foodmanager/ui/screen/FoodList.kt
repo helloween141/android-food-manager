@@ -1,21 +1,23 @@
 package com.example.foodmanager.ui.screen
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.foodmanager.ui.theme.Purple200
-import com.example.foodmanager.ui.theme.Shapes
 import com.example.foodmanager.ui.viewmodel.FoodViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -26,31 +28,56 @@ fun FoodList(
     vm: FoodViewModel,
     nav: NavHostController
 ) {
+    val foodList = vm.foodList.observeAsState().value
+    val totalPrice = vm.totalPrice.observeAsState().value
+
     Surface(modifier = Modifier.fillMaxSize()) {
         BottomSheetScaffold(sheetContent = {
             Row(modifier = Modifier.align(CenterHorizontally)) {
-                Text(text = "Итого: 0 руб.", modifier = Modifier.padding(10.dp).weight(1f))
-                Button(modifier = Modifier.padding(10.dp).weight(1f),
+                Text(
+                    text = "Итого: $totalPrice руб.",
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .weight(1f)
+                )
+                Button(modifier = Modifier
+                    .padding(10.dp)
+                    .weight(1f),
                     onClick = { nav.navigate("create") }) {
                     Text(text = "Создать товар")
                 }
             }
         }) {
-            Column(modifier = Modifier.padding(15.dp)) {
-                Row() {
-                    Text(text = "Some food 1", modifier = Modifier.weight(1f))
-                    Text(text = "100$", modifier = Modifier.weight(1f))
-                    Checkbox(checked = false, onCheckedChange = {})
-                }
-                Row() {
-                    Text(text = "Some food 2", modifier = Modifier.weight(1f))
-                    Text(text = "130$", modifier = Modifier.weight(1f))
-                    Checkbox(checked = false, onCheckedChange = {})
-                }
-                Row() {
-                    Text(text = "Some food 3", modifier = Modifier.weight(1f))
-                    Text(text = "50$", modifier = Modifier.weight(1f))
-                    Checkbox(checked = false, onCheckedChange = {})
+            LazyColumn(modifier = Modifier.padding(15.dp)) {
+                items(items = foodList!!) { item ->
+                    Row() {
+                        Text(text = item.name, modifier = Modifier.weight(1f))
+                        Text(text = "${item.price} руб.", modifier = Modifier.weight(1f))
+                        Checkbox(
+                            checked = item.checked,
+                            onCheckedChange = {},
+                            modifier = Modifier.weight(0.4f)
+                        )
+                        IconButton(
+                            onClick = { nav.navigate("food/${item.id}") },
+                            modifier = Modifier
+                                .weight(0.4f)
+                                .then(Modifier.size(24.dp))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Редактировать"
+                            )
+                        }
+                        IconButton(
+                            onClick = { vm.deleteFood(item) },
+                            modifier = Modifier
+                                .weight(0.4f)
+                                .then(Modifier.size(24.dp))
+                        ) {
+                            Icon(imageVector = Icons.Filled.Delete, contentDescription = "Удалить")
+                        }
+                    }
                 }
             }
         }

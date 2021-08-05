@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "food")
 data class Food(
-    val name: String,
-    val price: Double,
-    val status: Boolean = false
+    var name: String,
+    var price: Double,
+    val checked: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

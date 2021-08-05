@@ -1,5 +1,7 @@
 package com.example.foodmanager.ui.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,26 +18,51 @@ import javax.inject.Inject
 @HiltViewModel
 class FoodViewModel @Inject constructor(private val repository: FoodRepositoryImpl) : ViewModel() {
     private var _foodList = MutableLiveData<List<Food>>(listOf())
-
     val foodList: LiveData<List<Food>>
         get() = _foodList
 
+    private var _totalPrice = MutableLiveData(0.0)
+    val totalPrice: LiveData<Double>
+        get() = _totalPrice
+
+    var showProgress: MutableState<Boolean> = mutableStateOf(false)
+    var name: MutableState<String> = mutableStateOf("")
+    var price: MutableState<String> = mutableStateOf("")
+
     init {
         viewModelScope.launch {
-           repository.getAll().collect {
-               _foodList.postValue(it)
-           }
+            repository.getAll().collect { it ->
+                _foodList.postValue(it)
+
+                val sum = it.sumOf { elem -> if (!elem.checked) elem.price else 0.0 }
+                _totalPrice.postValue(sum)
+            }
         }
     }
 
-    suspend fun addFood(name: String, price: String) {
-        val food = Food(name = name, price = price.toDouble(), status = false)
+    fun getFood(id: Int = 0) {
+        if (id > 0) {
+            viewModelScope.launch {
+                showProgress.value = true
+                repository.getById(id).collect {
+                    name.value = it.name
+                    price.value = it.price.toString()
+                    showProgress.value = false
+                }
+            }
+        }
+    }
+
+    fun addFood() {
+        val food = Food(name = name.toString(), price = price.toString().toDouble(), checked = false)
         viewModelScope.launch {
             repository.create(food)
         }
     }
 
-    fun showProgress() {
-
+    fun deleteFood(food: Food) {
+        viewModelScope.launch {
+            repository.delete(food)
+        }
     }
 }

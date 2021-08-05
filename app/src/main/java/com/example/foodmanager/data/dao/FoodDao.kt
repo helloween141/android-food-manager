@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FoodDao {
-    @Query("SELECT * FROM food")
+    @Query("SELECT * FROM food ORDER BY checked")
     fun getAll(): Flow<List<Food>>
 
     @Query("SELECT * FROM food WHERE id = :id")
-    fun getOneById(id: Long): Flow<Food>
+    fun getOneById(id: Int): Flow<Food>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(food: Food)
