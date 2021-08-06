@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Food(
     var name: String,
     var price: Double,
-    val checked: Boolean = false
+    var checked: Boolean = false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

@@ -1,5 +1,6 @@
 package com.example.foodmanager.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,12 +51,15 @@ fun FoodList(
         }) {
             LazyColumn(modifier = Modifier.padding(15.dp)) {
                 items(items = foodList!!) { item ->
-                    Row() {
+                    Row(modifier = Modifier.background(Color.White)) {
                         Text(text = item.name, modifier = Modifier.weight(1f))
                         Text(text = "${item.price} руб.", modifier = Modifier.weight(1f))
                         Checkbox(
                             checked = item.checked,
-                            onCheckedChange = {},
+                            onCheckedChange = {
+                                item.checked = !item.checked
+                                vm.updateFood(item)
+                            },
                             modifier = Modifier.weight(0.4f)
                         )
                         IconButton(

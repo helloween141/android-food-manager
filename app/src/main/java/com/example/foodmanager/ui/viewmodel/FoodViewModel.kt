@@ -60,7 +60,11 @@ class FoodViewModel @Inject constructor(private val repository: FoodRepositoryIm
         }
     }
 
-    // TODO: Update food
+    fun updateFood(food: Food) {
+        viewModelScope.launch {
+            repository.update(food)
+        }
+    }
 
     fun deleteFood(food: Food) {
         viewModelScope.launch {

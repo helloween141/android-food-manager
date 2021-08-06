@@ -20,6 +20,10 @@ class FoodRepositoryImpl @Inject constructor(private val foodDao: FoodDao) {
         return foodDao.insert(food)
     }
 
+    suspend fun update(food: Food) {
+        return foodDao.update(food)
+    }
+
     suspend fun delete(food: Food) {
         return foodDao.delete(food)
     }
